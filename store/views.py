@@ -2,9 +2,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from .models import Product, Order
-from django.contrib.auth.decorators import login_required
+#from django.contrib.auth.decorators import login_required #Flaw 1 we need to use this import 
 from django.contrib.auth import logout
-
+from .forms import BuyProductForm  #Flaw 2: lets use form
 
 def home(request):
     products = Product.objects.all()
@@ -34,26 +34,42 @@ def logout_view(request):
     messages.success(request, "You are logged out.")
     return redirect('home')    
 
+
+#bad version flaw 1:
 def orders_view(request, user_id):
     orders = Order.objects.filter(user_id=user_id)
     return render(request, 'store/orders.html', {'orders': orders})
 
+''' Flaw 1: better version: 
+@login_required(login_url='login')
+def orders_view(request):
+    orders = Order.objects.filter(user=request.user)
+    return render(request, 'store/orders.html', {'orders': orders})
+'''
 
 def product_detail(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     return render(request, 'store/product_detail.html', {'product': product})
 
-def orders_view(request, user_id):
-    orders = Order.objects.filter(user_id=user_id)
-    return render(request, 'store/orders.html', {'orders': orders})
-
+#Flaw 1: bad version:
 def all_orders_view(request):
     orders = Order.objects.all()
     return render(request, 'store/orders.html', {'orders': orders})    
 
+''' Flaw 1: better version:  
 @login_required(login_url='login')
+def all_orders_view(request):
+    if not request.user.is_staff:
+        return redirect('home')  #home if no orders
+    orders = Order.objects.all()
+    return render(request, 'store/orders.html', {'orders': orders})
+ '''    
+
+
+#Flaw 2: This is poorly done:
+@login_required(login_url='login') 
 def buy_product(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
+    product = get_object(Product, id=product_id)
      
     if request.method == 'POST':
         # buyer informations:
@@ -74,6 +90,29 @@ def buy_product(request, product_id):
         )
         messages.success(request, f"You bought {product.name}!")
         
-        return redirect('orders', user_id=request.user.id)
+        return redirect('orders', user_id=request.user.id) #in fixed version Flaw 1: return redirect('orders')
     else:
         return render(request, 'store/buy_product.html', {'product': product})
+
+#Flaw 2: Better version:
+''' @login_required(login_url='login')
+def buy_product(request, product_id):
+    product = get_object(Product, id=product_id)
+    if request.method == 'POST':
+        form = BuyProductForm(request.POST)
+        if form.is_valid():
+            Order.objects.create(
+                user=request.user,
+                product=product,
+                quantity=1,
+                buyer_name=form.cleaned_data['buyer_name'],
+                buyer_email=form.cleaned_data['buyer_email'],
+                buyer_address=form.cleaned_data['buyer_address'],
+                buyer_phone=form.cleaned_data.get('buyer_phone', '')
+            )
+            messages.success(request, f"You bought {product.name}!")
+            return redirect('orders')
+    else:
+        form = BuyProductForm()
+    return render(request, 'store/buy_product.html', {'product': product, 'form': form}) 
+     '''      

@@ -12,10 +12,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-&jdf-$eqhwxz_2xjboa4=gr7ri+=ya-um8wn)@bmmz6bgsu1)s'
+SECRET_KEY = 'django-insecure-&jdf-$eqhwxz_2xjboa4=gr7ri+=ya-um8wn)@bmmz6bgsu1)s' #Flaw 3: Don't share your settings.py like this! to fix things, remove this line
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = True  #Flaw 5 let's fix this 
 
 ALLOWED_HOSTS = []
 
@@ -95,5 +95,54 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+
+''' Flaw 3: How to remove the secret key from the settings.py file
+from django.core.exceptions import ImproperlyConfigured
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+def get_env_variable(var_name):
+    return os.environ[var_name]
+
+SECRET_KEY = get_env_variable('SECRET_KEY')
+
+'''
+
+
+''' Flaw 4: AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 10,  
+        }
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
+
+INSTALLED_APPS += ['axes',]
+
+MIDDLEWARE += ['axes.middleware.AxesMiddleware',]
+
+AUTHENTICATION_BACKENDS = [
+    'axes.backends.AxesBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+AXES_FAILURE_LIMIT = 10  #failure limit
+AXES_COOLOFF_TIME = 1  #how many hours cooldown after failure limit is full
+'''
+
+'''Flaw 5: 
+def get_env_variable(var_name):
+    return os.environ[var_name]
+    
+DEBUG = get_env_variable('DEBUG') == 'True'
+
+'''    
