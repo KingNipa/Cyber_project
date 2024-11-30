@@ -4,7 +4,7 @@ from django.contrib import messages
 from .models import Product, Order
 #from django.contrib.auth.decorators import login_required #Flaw 1 we need to use this import 
 from django.contrib.auth import logout
-from .forms import BuyProductForm  #Flaw 2: lets use form
+#from .forms import BuyProductForm  #Flaw 2: lets use form!
 
 def home(request):
     products = Product.objects.all()
