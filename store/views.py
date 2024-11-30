@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from .models import Product, Order
-#from django.contrib.auth.decorators import login_required #Flaw 1 we need to use this import 
+from django.contrib.auth.decorators import login_required 
 from django.contrib.auth import logout
 #from .forms import BuyProductForm  #Flaw 2: lets use form!
 
