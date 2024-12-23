@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Buy {{ product.name }}</title>
+</head>
+<body>
+    <h1>Buy {{ product.name }}</h1>
+    <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width:300px;height:300px;">
+    <p>{{ product.description }}</p>
+    <p>Price: {{ product.price }}€</p>
+    
+    <form method="post">
+        {% csrf_token %}
+        <label for="buyer_name">Name:</label><br>
+        <input type="text" id="buyer_name" name="buyer_name" required><br><br>
+        
+        <label for="buyer_email">Email:</label><br>
+        <input type="text" id="buyer_email" name="buyer_email" required><br><br>
+        
+        <label for="buyer_address">Address:</label><br>
+        <input type="text" id="buyer_address" name="buyer_address" required><br><br>
+        
+        <label for="buyer_phone">Phone:</label><br>
+        <input type="text" id="buyer_phone" name="buyer_phone" required><br><br>
+        
+        <button type="submit">Confirm Purchase</button>
+    </form>
+    
+    <br><br>
+    <a href="{% url 'product_detail' product.id %}">Back to Product</a>
+</body>
+</html>
+<!--
+Flaw 2: 
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Buy {{ product.name }}</title>
+</head>
+<body>
+    <h1>Buy {{ product.name }}</h1>
+    <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width:300px;height:300px;">
+    <p>{{ product.description }}</p>
+    <p>Price: {{ product.price }}€</p>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <label for="{{ form.buyer_name.id_for_label }}">Name:</label><br>
+        {{ form.buyer_name }}<br>
+        {{ form.buyer_name.errors }}<br><br>
+        
+        <label for="{{ form.buyer_email.id_for_label }}">Email:</label><br>
+        {{ form.buyer_email }}<br>
+        {{ form.buyer_email.errors }}<br><br>
+        
+        <label for="{{ form.buyer_address.id_for_label }}">Address:</label><br>
+        {{ form.buyer_address }}<br>
+        {{ form.buyer_address.errors }}<br><br>
+        
+        <label for="{{ form.buyer_phone.id_for_label }}">Phone:</label><br>
+        {{ form.buyer_phone }}<br>
+        {{ form.buyer_phone.errors }}<br><br>
+        
+        <button type="submit">Confirm Purchase</button>
+    </form>
+    
+    <br><br>
+    <a href="{% url 'product_detail' product.id %}">Back to Product</a>
+</body>
+</html> -->

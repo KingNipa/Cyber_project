@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+{% comment %} FLAW 2 FIX: line 26 put this:      <a href="{% url 'orders' %}">  for this: <a href="{% url 'orders' user.id %}">  {% endcomment %}
+<html>
+<head>
+    <title>Cyber Security Project</title>
+    {% load static %}
+    <style>
+        .product {
+            display: inline-block;
+            margin: 10px;
+            border: 2px solid black;
+            padding: 10px;
+            width: 200px;
+            text-align: center;
+        }
+        img {
+            width: 150px;
+            height: 150px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Gamepots - King of Games </h1>
+    <p>We've been voted fot the worst gaming store in the World. But that's not the truth. Others are just jealous.</p>
+    {% if user.is_authenticated %}
+    <p>Welcome, {{ user.username }}! <a href="{% url 'logout' %}">Log out</a> or check <a href="{% url 'orders' user.id %}">Your Orders</a></p>
+{% else %}
+    <p>Please log in to shop: <a href="{% url 'login' %}">Log in</a></p>
+{% endif %}
+    <h2>Game selection:</h2>
+    <div>
+        {% for product in products %}
+            <div class="product">
+                <a href="{% url 'product_detail' product.id %}">
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                    <h3>{{ product.name }}</h3>
+                </a>
+                <p>Price: {{ product.price }}€</p>
+            </div>
+        {% endfor %}
+    </div>
+
+    <p id="blinking-text" style="color: black;">We celebrate Black Friday every day!</p>
+
+    <script>
+        //blinking black friday text
+        setInterval(function(){
+            var text = document.getElementById('blinking-text');
+            if (text.style.visibility === 'hidden') {
+                text.style.visibility = 'visible';
+            } else {
+                text.style.visibility = 'hidden';
+            }      
+        }, 1500);
+    </script>
+    <style>
+        #blinking-text {
+            position: fixed; 
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 28px; 
+            font-weight: bold;
+        }
+    </style>
+</body>
+</html>

@@ -1,0 +1,68 @@
+ <!--Bad version: --> 
+ <!DOCTYPE html>
+<html>
+<head>
+    <title>Your Orders</title>
+</head>
+<body>
+    <h1>Your Orders</h1>
+    {% if orders %}
+        <ul>
+            {% for order in orders %}
+                <li>
+                    <strong>Product:</strong> {{ order.product.name }}<br>
+                    <strong>Price:</strong> {{ order.product.price }}€<br>
+                    <strong>Quantity:</strong> {{ order.quantity }}<br>
+                    <strong>Ordered At:</strong> {{ order.ordered_at }}<br>
+
+                    {% autoescape off %} 
+                    <strong>Buyer Name:</strong> {{ order.buyer_name }}<br>
+                    <strong>Email:</strong> {{ order.buyer_email }}<br>
+                    <strong>Address:</strong> {{ order.buyer_address }}<br>
+                    <strong>Phone:</strong> {{ order.buyer_phone }}<br>
+                    {% endautoescape %}
+                    
+                </li>
+                <br>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You have no orders.</p>
+    {% endif %}
+    <br>
+    <a href="{% url 'home' %}">Back to Home</a>
+</body>
+</html>  
+
+<!-- Better version: 
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Your Orders</title>
+</head>
+<body>
+    <h1>Your Orders</h1>
+    {% if orders %}
+        <ul>
+            {% for order in orders %}
+                <li>
+                    <strong>Product:</strong> {{ order.product.name }}<br>
+                    <strong>Price:</strong> {{ order.product.price }}€<br>
+                    <strong>Quantity:</strong> {{ order.quantity }}<br>
+                    <strong>Ordered At:</strong> {{ order.ordered_at }}<br>
+                    <strong>Buyer Name:</strong> {{ order.buyer_name }}<br>
+                    <strong>Email:</strong> {{ order.buyer_email }}<br>
+                    <strong>Address:</strong> {{ order.buyer_address }}<br>
+                    <strong>Phone:</strong> {{ order.buyer_phone }}<br>
+                </li>
+                <br>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You have no orders.</p>
+    {% endif %}
+    <br>
+    <a href="{% url 'home' %}">Back to Home</a>
+</body>
+</html> 
+--> 
